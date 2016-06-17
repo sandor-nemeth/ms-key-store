@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+
+  unittest:
+    image: maven:3.3.9-jdk-8
+    volumes:
+      - .:/app
+    command: bash -c "cd /app && mvn verify"
+
+  acceptance-tests:
+    build:
+      context: .
+      dockerfile: acceptance-tests.Dockerfile
+    volumes:
+      - .:/app
+    command: bash -c "cd /app && mvn verify -Pacceptance-tests"
+    links:
+      - app
+
+  app:
+    extends:
+      file: docker-compose.yml
+      service: app
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_REDIS_HOST: redis
+    links:
+      - redis
+      - rabbitmq
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  rabbitmq:
+    extends:
+      file: docker-compose.yml
+      service: rabbitmq

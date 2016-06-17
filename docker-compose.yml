@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+
+  app:
+    build:
+      context: .
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_REDIS_HOST: redis
+
+  redis:
+    image: redis:3.2.0-alpine
+
+  rabbitmq:
+    image: rabbitmq:3.6.2
+
+
