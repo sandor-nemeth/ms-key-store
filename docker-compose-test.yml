@@ -8,6 +8,16 @@ services:
       - .:/app
     command: bash -c "cd /app && mvn verify"
 
+  integration-tests:
+    build:
+      context: .
+      dockerfile: integration-tests.Dockerfile
+    volumes:
+      - .:/app
+    command: bash -c "cd /app && mvn verify -Pintegration-tests"
+    links:
+      - app
+
   acceptance-tests:
     build:
       context: .

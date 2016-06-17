@@ -1,5 +1,6 @@
 package com.github.sandornemeth;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -9,7 +10,7 @@ public class AppIT {
 
     @Test
     public void integrationTest() {
-        // accessing redis
+        Assert.fail("a failed test");
     }
 
 }

@@ -1,0 +1,5 @@
+package:
+    image: maven:3.3.9-jdk-8
+    volumes:
+      - .:/app
+    command: bash -c "cd /app && mvn package"
