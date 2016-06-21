@@ -3,12 +3,10 @@ package com.github.sandornemeth;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.jetty9.InstrumentedHandler;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.codahale.metrics.logback.InstrumentedAppender;
-import org.eclipse.jetty.server.Server;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -24,9 +22,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded
         .EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.jetty
-        .JettyEmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.jetty.JettyServerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -52,6 +47,11 @@ public class App {
     }
 
     @Bean
+    public EmbeddedServletContainerCustomizer jettyCustomizer() {
+        return new JettyServletContainerCostumizer(metricRegistry());
+    }
+
+    @Bean
     public MetricRegistry metricRegistry() {
         MetricRegistry registry = new MetricRegistry();
         registry.register("jvm", new MemoryUsageGaugeSet());
@@ -67,34 +67,6 @@ public class App {
         instrumentedAppender.setContext(root.getLoggerContext());
         instrumentedAppender.start();
         return registry;
-    }
-
-    @Configuration
-    protected static class JettyConfig {
-
-        @Autowired
-        private MetricRegistry registry;
-
-        @Bean
-        public JettyServerCustomizer containerCustomizer() {
-
-            return server -> {
-                InstrumentedHandler handler =
-                        new InstrumentedHandler(registry, "jetty9");
-                handler.setHandler(server.getHandler());
-                server.setHandler(handler);
-            };
-        }
-
-        @Bean
-        public EmbeddedServletContainerCustomizer
-        servletContainerCustomizer() {
-            return container -> {
-                JettyEmbeddedServletContainerFactory factory =
-                        (JettyEmbeddedServletContainerFactory) container;
-                factory.addServerCustomizers(containerCustomizer());
-            };
-        }
     }
 
     @Configuration
