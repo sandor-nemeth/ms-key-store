@@ -1,25 +1,14 @@
 package com.github.sandornemeth;
 
-import java.io.IOException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.Test;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
+@RunWith(Cucumber.class)
 public class AppAT {
-
-    @Test
-    public void hasHealthCheck() throws IOException {
-        HttpGet httpGet = new HttpGet("http://app:8080/health");
-
-        CloseableHttpClient client = HttpClientBuilder.create().build();
-        CloseableHttpResponse response = client.execute(httpGet);
-
-        assertThat(response.getStatusLine().getStatusCode(), is(200));
-    }
 
 }
