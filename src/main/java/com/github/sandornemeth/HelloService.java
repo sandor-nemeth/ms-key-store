@@ -16,8 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloService {
 
-    @Autowired
     private StringRedisTemplate redis;
+
+    @Autowired
+    public HelloService(StringRedisTemplate redis) {
+        this.redis = redis;
+    }
 
     @RequestMapping(value = "/get/{key}", method = RequestMethod.GET)
     public String getValue(@PathVariable("key") String key) {
@@ -31,6 +35,5 @@ public class HelloService {
         String value = split.length > 1 ? split[1] : "";
         redis.opsForValue().set(key, value);
     }
-
 }
 

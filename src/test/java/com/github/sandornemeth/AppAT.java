@@ -10,14 +10,10 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * @author sandornemeth
- */
 public class AppAT {
 
-
     @Test
-    public void acceptanceTest() throws IOException {
+    public void hasHealthCheck() throws IOException {
         HttpGet httpGet = new HttpGet("http://app:8080/health");
 
         CloseableHttpClient client = HttpClientBuilder.create().build();
