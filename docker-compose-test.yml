@@ -6,7 +6,10 @@ services:
     image: maven:3.3.9-jdk-8
     volumes:
       - .:/app
-    command: bash -c "cd /app && mvn verify"
+      - ~/.m2:/root/.m2
+    environment:
+      MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+    command: bash -c "cd /app && mvn verify -B -q"
 
   integration-tests:
     build:
@@ -14,9 +17,14 @@ services:
       dockerfile: integration-tests.Dockerfile
     volumes:
       - .:/app
-    command: bash -c "cd /app && mvn verify -Pintegration-tests"
+      - ~/.m2:/root/.m2
+    environment:
+      MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+    command: bash -c "cd /app && mvn verify -B -q -Pintegration-tests"
     links:
       - app
+      - rabbitmq
+      - redis
 
   acceptance-tests:
     build:
@@ -24,7 +32,10 @@ services:
       dockerfile: acceptance-tests.Dockerfile
     volumes:
       - .:/app
-    command: bash -c "cd /app && mvn verify -Pacceptance-tests"
+      - ~/.m2:/root/.m2
+    environment:
+      MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+    command: bash -c "cd /app && mvn verify -B -q -Pacceptance-tests"
     links:
       - app
 

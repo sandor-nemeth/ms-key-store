@@ -2,4 +2,7 @@ package:
     image: maven:3.3.9-jdk-8
     volumes:
       - .:/app
-    command: bash -c "cd /app && mvn package"
+      - ~/.m2:/root/.m2
+    environment:
+      MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn  -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+    command: bash -c "cd /app && mvn -B -q package"
