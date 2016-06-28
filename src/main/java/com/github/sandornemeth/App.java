@@ -24,8 +24,11 @@ import org.springframework.boot.context.embedded
         .EmbeddedServletContainerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Hello world!
@@ -42,6 +45,13 @@ public class App {
     }
 
     @Bean
+    JedisPoolConfig jedisPoolConfig() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxTotal(128);
+        return poolConfig;
+    }
+
+    @Bean
     StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
         return new StringRedisTemplate(connectionFactory);
     }
@@ -49,6 +59,11 @@ public class App {
     @Bean
     public EmbeddedServletContainerCustomizer jettyCustomizer() {
         return new JettyServletContainerCostumizer(metricRegistry());
+    }
+
+    @Bean
+    TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor();
     }
 
     @Bean
@@ -97,6 +112,8 @@ public class App {
             SimpleMessageListenerContainer container =
                     new SimpleMessageListenerContainer();
             container.setConnectionFactory(connectionFactory);
+            container.setConcurrentConsumers(25);
+            container.setPrefetchCount(250);
             container.setQueueNames(queueName);
             container.setMessageListener(listenerAdapter);
             return container;
