@@ -1,11 +1,11 @@
 pipeline {
     agent {
-        label "docker"
+        label ""
     }
 
     stages {
-        stage("Checkout") {
-            echo "hello world!"
+        stage ("test") {
+            echo "hello"
         }
     }
 }
