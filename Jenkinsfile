@@ -5,7 +5,10 @@ pipeline {
 
     stages {
         stage ("test") {
-            echo "hello"
+            steps {
+                echo "hello"
+            }
+        
         }
     }
 }
