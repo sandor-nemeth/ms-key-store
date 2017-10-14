@@ -1,7 +1,11 @@
-node {
-   // Mark the code checkout 'stage'....
-   stage 'Checkout'
+pipeline {
+    agent {
+        label "docker"
+    }
 
-   // Checkout code from repository
-   echo 'hello world!'
+    stages {
+        stage("Checkout") {
+            echo "hello world!"
+        }
+    }
 }
